@@ -1,10 +1,33 @@
 # IMMUNEGENETIC NOTES
 
-I am learning tools and analysis steps study the HLA genes. I try to organize my notes in a structured way.
+This repository contains structured notes for learning tools and analysis steps in studying immunegenetic genes.
 
-There are two main parts:
+There are many immune genes. Due to theire property and gene structure, specific method are require to study them correctly. For example
+
+The notes focus on HLA-related work. 
+
+## Contents
+
+- [Bash Basics](bash_basics/)
+- [Conda Basics](conda_basics/)
+- [GWAS Quality Control](gwas_qc/)
+- [HLA Genotyping](hla-genotyping/)
+- [KIR Mapper](kir-mapper/)
+- [SmartPCA Usage](smartpca/)
+- [SNP2HLA Tool](snp2hla/)
+
+## Obtaining HLA data
+
+We focus on two main data source: 1) genotyping array data and 2) WGS data.
 
 - HLA imputation: impute HLA variants (alleles, amino acids, and SNPs) from the genotying array data. We need QC steps in prior to the imputation.
 - HLA calling: extract HLA from WGS data.
 
 ## HLA genes
+
+
+
+
+---
+
+These notes are organized for bioinformatics researchers and students interested in immune genetics.
