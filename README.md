@@ -1,5 +1,7 @@
 # IMMUNEGENETIC NOTES
 
+I am learning tools and analysis steps for studying HLA genes.
+
 This repository contains structured notes for learning tools and analysis steps in studying immunegenetic genes.
 
 There are many immune genes. Due to theire property and gene structure, specific method are require to study them correctly. For example
