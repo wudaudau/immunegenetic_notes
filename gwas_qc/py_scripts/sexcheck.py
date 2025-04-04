@@ -84,20 +84,28 @@ if __name__ == "__main__":
 
     print(f"folder: {folder}")
     print(f"file name: {f_name}")
+    print()
 
 
     df_sexcheck = read_sexcheck_file(file_path)
     print(f"df_sexcheck shape: {df_sexcheck.shape}")
+    print()
 
+    print("Filter status not OK:")
     df_status_not_ok = filter_status_not_ok(df_sexcheck)
     print(f"df_status_not_ok shape: {df_status_not_ok.shape}")
     print(df_status_not_ok)
+    print()
 
+    print("Female check:")
     df_female_check = keep_female_below_threshold(df_status_not_ok)
     print(df_female_check)
+    print()
 
+    print("Male check:")
     df_male_check = keep_male_about_threshold(df_female_check)
     print(df_male_check)
+    print()
 
     save_sex_discrepancy_txt(df_male_check, folder)
     
