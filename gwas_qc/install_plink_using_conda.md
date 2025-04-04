@@ -22,3 +22,4 @@ conda activate gwas-qc-env
 
 
 We also need the `py_scripts` in this section. Clone ... to ...
+TODO: Find a better way to manage it for people want to follow these notes. 
