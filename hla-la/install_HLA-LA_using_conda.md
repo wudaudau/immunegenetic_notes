@@ -15,6 +15,8 @@ Run the following code to create an env named `hla-la-env` with `hla-la` (channe
 conda create -n hla-la-env bioconda::hla-la conda-forge::libgcc-ng
 ```
 
+The Platform should be linux-64. It does not work on MAC OS.
+
 Among the packages, I saw it uses older versions of Py and pandas. Probably, it is not a good idea to add Python to the env. We will see ... 
 
 Be careful with the messages from conda. There are additional instruction to complete the installation.
