@@ -18,8 +18,8 @@ The notes focus on HLA-related work.
   - [SmartPCA Usage](smartpca/)
   - [SNP2HLA Tool](snp2hla/)
 - HLA Calling
-  - [HLA-LA]()
-  - [hla-mapper]()
+  - [HLA-LA](hla-la/)
+  - [hla-mapper](hla-mapper/)
   - [HLA Genotyping](hla-genotyping/)
 - KIR Calling
   - [KIR Mapper](kir-mapper/)
