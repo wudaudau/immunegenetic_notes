@@ -8,13 +8,19 @@ The notes focus on HLA-related work.
 
 ## Contents
 
-- [Bash Basics](bash_basics/)
-- [Conda Basics](conda_basics/)
-- [GWAS Quality Control](gwas_qc/)
-- [HLA Genotyping](hla-genotyping/)
-- [KIR Mapper](kir-mapper/)
-- [SmartPCA Usage](smartpca/)
-- [SNP2HLA Tool](snp2hla/)
+- Basics
+  - [Bash Basics](bash_basics/)
+  - [Conda Basics](conda_basics/)
+- HLA Imputation
+  - [GWAS Quality Control](gwas_qc/)
+  - [SmartPCA Usage](smartpca/)
+  - [SNP2HLA Tool](snp2hla/)
+- HLA Calling
+  - [HLA-LA]()
+  - [hla-mapper]()
+  - [HLA Genotyping](hla-genotyping/)
+- KIR Calling
+  - [KIR Mapper](kir-mapper/)
 
 ## Obtaining HLA data
 
