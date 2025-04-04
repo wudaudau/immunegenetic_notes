@@ -6,6 +6,8 @@ We need PLINK, R, and Python (I develop my Python scripts to optimize the GWAS Q
 
 Create and instal:
 
+`seaborn` does not need `conda-forge`. `numpy`, `scipy`, `pandas`, and `matplotlib` will be included. 
+
 - [ ] Do I need to include JupyterNotebook?
 
 ```bash
@@ -17,3 +19,6 @@ Acitvate
 ```bash
 conda activate gwas-qc-env
 ```
+
+
+We also need the `py_scripts` in this section. Clone ... to ...
