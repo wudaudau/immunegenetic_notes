@@ -1,5 +1,6 @@
 """
 TODO: The R script generate 3 figures (Sex check, Female check, and Male check). Do we need to generate the figures?
+    - If we make the figures, we can put the thresholds (femail < 0.2; male > 0.8) in the figure.
 """
 
 import sys
@@ -42,6 +43,11 @@ def keep_female_below_threshold(df:pd.DataFrame, threshold:float=0.25) -> pd.Dat
 
     Return df
     """
+    # TODO: To include the message in this function.
+    # TODO: 
+    #   Print threshold.
+    #   Pring those can be kept. With reason.
+    #   Print those to be checked in the next step (male check).
     return df[((df["PEDSEX"] == 2) &  (df["F"] > threshold)) | (df["PEDSEX"] == 1)]
 
 def keep_male_about_threshold(df:pd.DataFrame, threshold:float=0.8) -> pd.DataFrame:
@@ -55,6 +61,11 @@ def keep_male_about_threshold(df:pd.DataFrame, threshold:float=0.8) -> pd.DataFr
 
     Return df
     """
+    # TODO: To include the message in this function.
+    # TODO: 
+    #   Print threshold.
+    #   Pring those can be kept. With reason.
+    #   Pring ...
     return df[((df["PEDSEX"] == 1) &  (df["F"] < threshold)) | (df["PEDSEX"] == 2)]
 
 def save_sex_discrepancy_txt(df:pd.DataFrame, save_path:str) -> None:
