@@ -1,5 +1,5 @@
 """
-
+TODO: The R script generate 3 figures (Sex check, Female check, and Male check). Do we need to generate the figures?
 """
 
 import sys
