@@ -77,7 +77,7 @@ def save_sex_discrepancy_txt(df:pd.DataFrame, save_path:str) -> None:
     Save to sex_discrepancy.txt in the save_path.
     It will be the file to use in the next QC2
     """
-    file = f"{save_path}/sex_discrepancy.txt"
+    file = f"{save_path}/sex_discrepancy.txt" # TODO: We may update the file name to "qc2_sex_discrepancy.txt" in the future.
     df.to_csv(file, index=False, sep=' ')
     print(f"{file} is saved.")
 
