@@ -14,6 +14,8 @@ Create and instal:
 conda create -n gwas-qc-env conda-forge::r-base bioconda::plink python seaborn
 ```
 
+Of note: osx-arm64 platform ok.
+
 Acitvate
 
 ```bash
