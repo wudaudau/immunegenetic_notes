@@ -463,7 +463,11 @@ Generate `.ped` and `.map` to run **smartpca**.
 Use the same input as the plink pca
 
 ```bash
-plink --bfile output/practice_202501_DataQC/LEAP_FreezeV3_1566_May2020_PSC2_qc7_1_participant_only --extract output/practice_202501_DataQC/LEAP_FreezeV3_1566_May2020_PSC2_qc4_hweall1em10_indepSNP.prune.in --recode --out output/practice_202501_DataQC/LEAP_FreezeV3_1566_May2020_PSC2_qc7_3_recode_pedmap 
+plink \
+--bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_1_participant_only \
+--extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
+--recode \
+--out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_3_recode_pedmap 
 ```
 
 
