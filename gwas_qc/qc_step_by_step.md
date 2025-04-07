@@ -326,7 +326,13 @@ plink \
 --out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP
 ```
 
-These commands produce a pruned subset of markers that are in approximate linkage equilibrium with each other, writing the IDs to plink.prune.in (and the IDs of all excluded variants to plink.prune.out).
+Output:
+
+- `qc4_hweall1em10_indepSNP.log`
+- `qc4_hweall1em10_indepSNP.prune.in` (exclude)
+- `qc4_hweall1em10_indepSNP.prune.out` (include)
+
+These commands produce a pruned subset of markers that are in approximate linkage equilibrium with each other, writing the IDs to plink.prune.in (and the IDs of all excluded variants to plink.prune.out). We will use theses file in later steps of QCs.
 
 Use 0.5 instead of 0.2 here.
 
@@ -335,12 +341,6 @@ The 50 5 0.5 are:
 - the window size, 
 - the number of SNPs to shift the window at each step, and 
 - the multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously.
-
-Output:
-
-- `qc4_hweall1em10_indepSNP.log`
-- `qc4_hweall1em10_indepSNP.prune.in`
-- `qc4_hweall1em10_indepSNP.prune.out`
 
 ## QC5 Heterogzygotie
 
