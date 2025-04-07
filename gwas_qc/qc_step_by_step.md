@@ -150,7 +150,7 @@ Output:
 > Generate a bfile with autosomal SNPs only and delete SNPs with a low minor allele frequency (MAF).
 > A conventional MAF threshold for a regular GWAS is between 0.01 or 0.05, depending on sample size.
 
-Overall steps:
+Steps overview:
 
 - Only focus on autosomal SNPs (Chr 1-22).
 - Calculate MAF using `--freq`.
@@ -235,6 +235,12 @@ Output:
 
 > Delete SNPs which are not in Hardy-Weinberg equilibrium (HWE).
 
+Steps overview:
+
+- Use `--hardy` to calculate HWE in a `.hwe` file.
+- View the HWE distribution (all and below the threshold, respectively).
+- Remove low HWE individual from the bfiles (**on all individuals** with a threshold).
+
 ```bash
 plink \
 --bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
@@ -273,17 +279,7 @@ Output:
 - `hwe_distribution.png`
 - `hwe_distribution_below_threshold.png`
 
-
-Filter HWE on all individuals using 1e-10 as the threshold. (Add `--hwe-all` to filter HWE on all individuals rather than only control ones.)
-
-
-- [ ] Filter on HWE
-
---bfile LEAP_FreezeV3_1566_May2020_PSC2_qc3_2_maf001
---hwe 1e-10
---hwe-all
---make-bed
---out LEAP_FreezeV3_1566_May2020_PSC2_qc4_hweall1em10
+Filter HWE **on all individuals** using 1e-10 as the threshold. (Add `--hwe-all` to filter HWE on all individuals rather than only control ones.)
 
 ```bash
 --bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
