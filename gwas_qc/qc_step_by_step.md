@@ -10,7 +10,7 @@ The QC1 to QC6 are based on the  Part 1 of **GWA_tutorial** (https://github.com/
 
 QC7 PCA will be use **smartpca** tool (link to my note).
 
-- [ ] I need to develop and provide my Py scripts.
+To use the Python scripts, you can clone this repositoy and then copy the `(py scripts reposity)` to (`/work/clwu/GWA_tutorial/`).
 
 
 ## Working directory
