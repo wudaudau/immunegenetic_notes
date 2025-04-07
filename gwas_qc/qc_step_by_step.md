@@ -6,7 +6,7 @@ It's good to practice step-by-step to learn each QC step.
 
 There are 7 QC steps. (Table 1 to the article https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608).
 
-The QC1 to QC6 are based on the  Part 1 of **GWA_tutorial** (https://github.com/MareesAT/GWA_tutorial). There are instructions in (`1_Main_script_QC_GWAS.txt`).
+The QC1 to QC6 are based on the  Part 1 of **GWA_tutorial** (https://github.com/MareesAT/GWA_tutorial). There are instructions in (`1_Main_script_QC_GWAS.txt`). The parameters used in this note are for HLA imputation steps, instead of genera GWAS.
 
 QC7 PCA will be use **smartpca** tool (link to my note).
 
