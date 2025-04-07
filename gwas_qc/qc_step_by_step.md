@@ -239,7 +239,7 @@ Steps overview:
 
 - Use `--hardy` to calculate HWE in a `.hwe` file.
 - View the HWE distribution (all and below the threshold, respectively).
-- Remove low HWE individual from the bfiles (**on all individuals** with a threshold).
+- Remove SNPs which are not in HWE from the bfiles (**on all individuals** with a threshold).
 
 ```bash
 plink \
@@ -255,7 +255,7 @@ Output:
 - `.log`
 - `.hwe`
 
-(What does `--hardy` do? https://www.cog-genomics.org/plink/1.9/basic_stats#hardy)
+`--hardy` writes a list of genotype counts and Hardy-Weinberg equilibrium exact test statistics to plink.hwe. With the 'midp' modifier, a mid-p adjustment is applied (see --hwe for discussion). 'gz' causes the output file to be gzipped. (https://www.cog-genomics.org/plink/1.9/basic_stats#hardy)
 
 This will generate a `.hwe` file (https://www.cog-genomics.org/plink/1.9/basic_stats#hardy). It is a big file. The columns are: "CHR", "SNP", "TEST", "A1", "A2", "GENO", "O(HET)", "E(HET)", and "P".
 
@@ -280,6 +280,8 @@ Output:
 - `hwe_distribution_below_threshold.png`
 
 Filter HWE **on all individuals** using 1e-10 as the threshold. (Add `--hwe-all` to filter HWE on all individuals rather than only control ones.)
+
+Here, because we filter on all individuals instead of on control only, use a small threshold.
 
 ```bash
 --bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
