@@ -391,10 +391,32 @@ Output:
 
 The tutorial says that we use 3 SDs to keep individuals with 3SDs. However, accroding to Sigrid, it's better to adjust the histogram to adapte the filter. We may keep all individulas it no weired values and count presented.
 
-There sould be someting to get a list of individuals to extract or to exclude.
+There sould be someting to get a list of individuals to extract or to exclude. -> Create a Py script. Based on the rate (`(df["N(NM)"] - df["O(HOM)"]) / df["N(NM)"]`), 
+
+Use the following script to generate a outlier list with None as the threshold. ("3sd")
 
 ```bash
+python /work/clwu/GWA_tutorial/py_scripts/qc5_heterogenity_outlier.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check.het None
 ```
+
+Output:
+
+- `heterozygosity_outliers.txt`
+
+Remove heterozygosity outliers.
+
+```bash
+plink \
+--bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
+--remove /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/heterozygosity_outliers.txt \
+--make-bed \
+--out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_no_heterozygosity_outliers
+```
+
+Output:
+
+- `.log`
+- new bfiles
 
 ## QC6 IBD
 
