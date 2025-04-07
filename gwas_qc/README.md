@@ -1,6 +1,6 @@
 # GWAS Quality Control (QC)
 
-This section covers the essential steps to perform quality control for GWAS data before conducting association analysis or HLA imputation.
+This section covers the essential steps to perform quality control for genotyping data before conducting HLA imputation and HLA-based association analysis.
 
 ## Steps
 
