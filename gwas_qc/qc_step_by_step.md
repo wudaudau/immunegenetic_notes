@@ -360,14 +360,34 @@ plink \
 --out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check
 ```
 
-The output `` file is a table similar to `--hardy` but not exactly. The columns are: "FID", "IID", "O(HOM)", "E(HOM)", "N(NM)", "F".
+Output:
+
+- `.log`
+- `.het`
+
+`--het` is a statistical option computes observed and expected autosomal homozygous genotype counts for each sample, and reports method-of-moments F coefficient estimates (i.e. (<observed hom. count> - <expected count>) / (<total observations> - <expected count>)) to plink.het. 
+
+The output `.het` file is a table similar to `--hardy` but not exactly. The columns are: "FID", "IID", "O(HOM)", "E(HOM)", "N(NM)", "F". This file contains your pruned data set.
+
+```
+  FID            IID       O(HOM)       E(HOM)        N(NM)            F
+  28328   502088905174       176854    1.852e+05       269885     -0.09841
+  99407   971064170845       186259    1.849e+05       269471      0.01576
+  94811   869570533760       191215    1.853e+05       270041      0.06975
+  19967   957070122174       176705    1.796e+05       260443     -0.03527
+  ...
+```
 
 
-Plot of the heterozygosity rate distribution
+Plot of the heterozygosity rate distribution.
 
 ```bash
-python py_scripts/qc5_heterogenity_check.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check.het
+python /work/clwu/GWA_tutorial/py_scripts/qc5_heterogenity_check.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check.het
 ```
+
+Output:
+
+- `heterozygosity.png`
 
 The tutorial says that we use 3 SDs to keep individuals with 3SDs. However, accroding to Sigrid, it's better to adjust the histogram to adapte the filter. We may keep all individulas it no weired values and count presented.
 
