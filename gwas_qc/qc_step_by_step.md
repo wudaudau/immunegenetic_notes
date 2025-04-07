@@ -426,7 +426,7 @@ Calculates **identity by descent (IBD)** using `--genome` and based on the LD-ba
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
+--bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_no_heterozygosity_outliers \
 --extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
 --genome \
 --min 0.2 \
