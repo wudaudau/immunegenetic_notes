@@ -239,7 +239,7 @@ Output:
 plink \
 --bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
 --hardy \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001
+--out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_hardy
 ```
 
 - [ ] I might need to update the output file name to prevent the log been overwitten.
@@ -262,13 +262,17 @@ CHR         SNP     TEST   A1   A2                 GENO   O(HET)   E(HET)       
    ...
 ```
 
-Use following script to create a **zoomed (P < 0.00001)** .hwe file based on the source .hwe file (no header left).
+Run the `hwe.py` to generate the hwe (P) and zoomhwe **(P < 0.00001)** in histograms (Histogram HWE and Histogram HWE: strongly deviating SNPs only) in the output folder.
 
 ```bash
-awk '{ if ($9 <0.00001) print $0 }' /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001.hwe>/work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_zoomhwe.hwe
+python /work/clwu/GWA_tutorial/py_scripts/hwe.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_hardy
 ```
 
-There is a R script (`hwe.R`) to plot the hwe and zoomhwe in histograms (Histogram HWE and Histogram HWE: strongly deviating SNPs only).
+Output:
+
+- `hwe_distribution.png`
+- `hwe_distribution_below_threshold.png`
+
 
 Filter HWE on all individuals using 1e-10 as the threshold. (Add `--hwe-all` to filter HWE on all individuals rather than only control ones.)
 
