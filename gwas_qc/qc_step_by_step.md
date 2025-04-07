@@ -235,6 +235,8 @@ Output:
 
 > Delete SNPs which are not in Hardy-Weinberg equilibrium (HWE).
 
+HWE is about the genetic evalution. A basic assumption would be the control group should has no suprise, therefore the HWE check is strick; the case group might associated with evolution, therefore we tolerant more with the HWE control.
+
 Steps overview:
 
 - Use `--hardy` to calculate HWE in a `.hwe` file.
@@ -271,7 +273,7 @@ CHR         SNP     TEST   A1   A2                 GENO   O(HET)   E(HET)       
 Run the `hwe.py` to generate the hwe (P) and zoomhwe **(P < 0.00001)** in histograms (Histogram HWE and Histogram HWE: strongly deviating SNPs only) in the output folder.
 
 ```bash
-python /work/clwu/GWA_tutorial/py_scripts/hwe.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_hardy
+python /work/clwu/GWA_tutorial/py_scripts/hwe.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_hardy.hwe
 ```
 
 Output:
@@ -283,13 +285,21 @@ Filter HWE **on all individuals** using 1e-10 as the threshold. (Add `--hwe-all`
 
 Here, because we filter on all individuals instead of on control only, use a small threshold.
 
+The general steps would be to filtre more strickly (p value below 1e-6) on the control group.
+
 ```bash
+plink \
 --bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
 --hwe 1e-10 \
 --hwe-all \
 --make-bed \
 --out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10
 ```
+
+Output:
+
+- `.log`
+- new bfiles
 
 ## Generate indepSNP tags
 
@@ -305,14 +315,32 @@ We need a `inversion.txt` file.
 17 40900000 45000000 Inversion17
 ```
 
+There are complexe gene regions. We skip them to make the indepSNP tags.
+
 ```bash
 plink \
 --bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
---exclude inversion.txt \
+--exclude /work/clwu/GWA_tutorial/1_QC_GWAS/inversion.txt \
 --range \
 --indep-pairwise 50 5 0.5 \
 --out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP
 ```
+
+These commands produce a pruned subset of markers that are in approximate linkage equilibrium with each other, writing the IDs to plink.prune.in (and the IDs of all excluded variants to plink.prune.out).
+
+Use 0.5 instead of 0.2 here.
+
+The 50 5 0.5 are:
+
+- the window size, 
+- the number of SNPs to shift the window at each step, and 
+- the multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously.
+
+Output:
+
+- `qc4_hweall1em10_indepSNP.log`
+- `qc4_hweall1em10_indepSNP.prune.in`
+- `qc4_hweall1em10_indepSNP.prune.out`
 
 ## QC5 Heterogzygotie
 
