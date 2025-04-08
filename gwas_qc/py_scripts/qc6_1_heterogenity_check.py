@@ -48,7 +48,7 @@ def plot_het_distribution(df:pd.DataFrame, save_path:str) -> None:
     plt.legend(['Mean', 'Mean ± 1 Std', 'Mean ± 2 Std', 'Mean ± 3 Std'])
     # Save the plot
 
-    plt.savefig(f"{save_path}/heterozygosity.png") # TODO: add "qc5_" in the file name.
+    plt.savefig(f"{save_path}/qc6_1_heterozygosity.png")
     # plt.show()
     plt.close()
 
@@ -77,5 +77,5 @@ if __name__ == "__main__":
 
     # Check the heterogeneity distribution
     plot_het_distribution(df_het, folder)
-    print("Heterogeneity distribution plot is saved.")
+    print(f"Heterogeneity distribution plot is saved in {folder}.")
     print()

@@ -77,7 +77,7 @@ def save_sex_discrepancy_txt(df:pd.DataFrame, save_path:str) -> None:
     Save to sex_discrepancy.txt in the save_path.
     It will be the file to use in the next QC2
     """
-    file = f"{save_path}/sex_discrepancy.txt" # TODO: We may update the file name to "qc2_sex_discrepancy.txt" in the future.
+    file = f"{save_path}/qc2_sex_discrepancy.txt"
     df.to_csv(file, index=False, sep=' ')
     print(f"{file} is saved.")
 
@@ -97,6 +97,10 @@ if __name__ == "__main__":
     print(f"file name: {f_name}")
     print()
 
+    # TODO:
+        # Create a figure to show the distribution of the F value.
+        # Use <0.2 to indicate female and > 0.8 to indicate male.
+        # Maybe add additional ranges 0.25 or 0.3 to view potential outliers.
 
     df_sexcheck = read_sexcheck_file(file_path)
     print(f"df_sexcheck shape: {df_sexcheck.shape}")

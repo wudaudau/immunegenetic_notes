@@ -33,7 +33,7 @@ def plot_hwe_distribution(df:pd.DataFrame, save_path:str) -> None:
     plt.ylabel("Frequency")
     plt.title(f"HWE Distribution")
     plt.grid()
-    plt.savefig(f"{save_path}/hwe_distribution.png") # TODO: add "qc3_2_" in the file name.
+    plt.savefig(f"{save_path}/qc4_1_hwe_distribution.png") # TODO: add "qc3_2_" in the file name.
     # plt.show()
     plt.close()
 
@@ -68,7 +68,7 @@ def plot_zoomhwe_distribution(df_hwe:pd.DataFrame, save_path:str, threshold:floa
     # x-axis in log scale
     plt.xscale('log')
 
-    plt.savefig(f"{save_path}/hwe_distribution_below_threshold.png") # TODO: add "qc3_2_" in the file name.
+    plt.savefig(f"{save_path}/qc4_1_hwe_distribution_below_threshold.png")
     # plt.show()
     plt.close()
 
@@ -109,3 +109,5 @@ if __name__ == "__main__":
     plot_zoomhwe_distribution(df_hwe, folder, threshold)
     print("Zoomed-in HWE distribution plotted.")
     print()
+
+    # TODO: We can also plot the zoomed-in HWE distribution by genotype.
