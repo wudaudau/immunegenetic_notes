@@ -17,7 +17,7 @@ missingness/sex check → MAF → HWE → LD pruning → heterozygosity → IBD 
 - QC5: LD pruning  
 - QC6: Heterogeneity
 - QC7: IBD
-- QC8: PCA Poplutation 
+- QC8: PCA Poplutation
 
 (QC8 PCA will be use **smartpca** tool (link to my note).)
 
@@ -55,20 +55,20 @@ plink \
 ```
 
 Output:
+
 - `.log`
 - new bfiles
 - `.hh`  (heterozygous haploid and nonmale Y chromosome call list) (https://www.cog-genomics.org/plink/1.9/formats#hh) (https://www.cog-genomics.org/plink/1.9/output).
 
 The `.hh` file is the list to keep(?) (nonmissing calls).
 
-```
+```text
 96262   796253871713    rs5939319
 86827   696700648122    rs5939319
 96262   796253871713    rs1419931
 96262   236256460571    rs1419931
 ...
 ```
-
 
 ### QC1-2 Missing On Individuals
 
@@ -84,18 +84,18 @@ plink \
 ```
 
 Output:
+
 - `.log`
 - new bfiles
 - `.hh`  (heterozygous haploid and nonmale Y chromosome call list) (https://www.cog-genomics.org/plink/1.9/formats#hh)
 - `.irem` FID and IID of the removed individuals (https://www.cog-genomics.org/plink/1.9/output).
-
 
 In one step
 
 ```bash
 plink \
   --bfile DATASET \
-  --geno 0.02 
+  --geno 0.02 \
   --mind 0.05 \
   --make-bed \
   --out ${OUTDIR}/qc1_missing
@@ -103,7 +103,7 @@ plink \
 
 ## QC2 Sex
 
-> Subjects who were a priori determined as females must have a F value of <0.2, and subjects who were a priori determined as males must have a F value >0.8. This F value is based on the X chromosome inbreeding (homozygosity) estimate. 
+> Subjects who were a priori determined as females must have a F value of <0.2, and subjects who were a priori determined as males must have a F value >0.8. This F value is based on the X chromosome inbreeding (homozygosity) estimate.
 
 Males have only 1 X chromosome, so regarded as homogeneous (F value >0.8). Females have 2 X chromosomes, so there are certain heterogeneous rate (F value < 0.2).
 
@@ -123,13 +123,14 @@ plink \
 (https://www.cog-genomics.org/plink/1.9/basic_stats#check_sex)
 
 Output:
+
 - `.log`
 - `.hh`  (heterozygous haploid and nonmale Y chromosome call list) (https://www.cog-genomics.org/plink/1.9/formats#hh)
 - `.sexcheck`
 
 Then, we need to generate a file `sex_discrepancy.txt` using the `.sexcheck` file.
 
-```
+```text
     FID            IID       PEDSEX       SNPSEX       STATUS            F
   28328   502088905174            2            2           OK     -0.04789
   99407   971064170845            2            2           OK      0.05654
@@ -138,6 +139,7 @@ Then, we need to generate a file `sex_discrepancy.txt` using the `.sexcheck` fil
 ```
 
 How to make it? Based on `.sexcheck` file :
+
 1. Filter STATUS are NOT "OK".
 2. Check F on females. F of female are < 0.2.
 3. Check F on males. F of male are > 0.8.
@@ -149,6 +151,7 @@ python PYDIR/qc2_1_sexcheck.py OUTDIR/qc2_1_sexcheck.sexcheck
 ```
 
 Output:
+
 - `sex_discrepancy.txt`. A list of inidividual to remove.
 
 ### QC2-2 Remove sex discripency
@@ -171,7 +174,7 @@ Output:
 > Generate a bfile with autosomal SNPs only and delete SNPs with a low minor allele frequency (MAF).
 > A conventional MAF threshold for a regular GWAS is between 0.01 or 0.05, depending on sample size.
 
-General cases: 
+General cases:
 
 - Sample size big (how big???), use low threshold (e.g. 0.01).
 - Sample size small, use high threshold (e.g. 0.05).
@@ -206,7 +209,6 @@ Output:
 
 Check MAF on Chr 1-22:
 
-
 ```bash
 plink \
   --bfile OUTDIR/qc3_1_chr1_22 \
@@ -221,7 +223,7 @@ Output:
 
 PLINK will generate a log and a `.frq` file, which is a table of MAF (https://www.cog-genomics.org/plink/1.9/basic_stats#freq).
 
-```
+```text
 CHR         SNP   A1   A2          MAF  NCHROBS
    1   rs4477212    0    A            0     2036
    1   rs3131972    T    C        0.192     2036
@@ -231,7 +233,6 @@ CHR         SNP   A1   A2          MAF  NCHROBS
    1   rs7537756    G    A       0.2198     2038
 ...
 ```
-
 
 ```bash
 python PYDIR/qc3_2_mafcheck.py OUTDIR/qc3_1_chr1_22_MAF_check.frq 
@@ -290,7 +291,7 @@ Output:
 
 This will generate a `.hwe` file (https://www.cog-genomics.org/plink/1.9/basic_stats#hardy). It is a big file. The columns are: "CHR", "SNP", "TEST", "A1", "A2", "GENO", "O(HET)", "E(HET)", and "P".
 
-```
+```text
 CHR         SNP     TEST   A1   A2                 GENO   O(HET)   E(HET)            P 
    1   rs3131972      ALL    T    C           34/323/661   0.3173   0.3103       0.5444
    1   rs3131972      AFF    T    C              2/15/20   0.4054   0.3817            1
@@ -342,7 +343,7 @@ We need a `inversion.txt` file.
 
 `inversion.txt` is already in the **1_QC_GWAS** package.
 
-```
+```text
 6 25500000 33500000 8 HLA
 8 8135000 12000000 Inversion8
 17 40900000 45000000 Inversion17
@@ -367,14 +368,14 @@ Output:
 
 These commands produce a pruned subset of markers that are in approximate linkage equilibrium with each other, writing the IDs to plink.prune.in (and the IDs of all excluded variants to plink.prune.out). We will use theses file in later steps of QCs.
 
-**Linkage disequilibrium (LD)**, association of alleles on the same chromosome. 
+**Linkage disequilibrium (LD)**, association of alleles on the same chromosome.
 
 Use 0.5 instead of 0.2 here.
 
 The 50 5 0.5 are:
 
-- the window size, 
-- the number of SNPs to shift the window at each step, and 
+- the window size
+- the number of SNPs to shift the window at each step
 - the multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously.
 
 ### QC5-2 Prun data
@@ -414,11 +415,11 @@ Output:
 - `.log`
 - `.het`
 
-`--het` is a statistical option computes observed and expected autosomal homozygous genotype counts for each sample, and reports method-of-moments F coefficient estimates (i.e. (<observed hom. count> - <expected count>) / (<total observations> - <expected count>)) to plink.het. 
+`--het` is a statistical option computes observed and expected autosomal homozygous genotype counts for each sample, and reports method-of-moments F coefficient estimates (i.e. (<observed hom. count> - <expected count>) / (<total observations> - <expected count>)) to plink.het.
 
 The output `.het` file is a table similar to `--check-sex` or `--hardy` but not exactly. The columns are: "FID", "IID", "O(HOM)", "E(HOM)", "N(NM)", "F". This file contains your pruned data set.
 
-```
+```text
   FID            IID       O(HOM)       E(HOM)        N(NM)            F
   28328   502088905174       176854    1.852e+05       269885     -0.09841
   99407   971064170845       186259    1.849e+05       269471      0.01576
@@ -443,7 +444,7 @@ Output:
 
 The tutorial says that we use 3 SDs to keep individuals with 3SDs. However, accroding to Sigrid, it's better to adjust the histogram to adapte the filter. We may keep all individulas it no weired values and count presented.
 
-There sould be someting to get a list of individuals to extract or to exclude. -> Create a Py script. Based on the rate (`(df["N(NM)"] - df["O(HOM)"]) / df["N(NM)"]`), 
+There sould be someting to get a list of individuals to extract or to exclude. -> Create a Py script. Based on the rate (`(df["N(NM)"] - df["O(HOM)"]) / df["N(NM)"]`), ...
 
 Use the following script to generate a outlier list with None as the threshold. ("3sd")
 
@@ -494,7 +495,7 @@ Output:
 
 The `.genome` file is a table. The columns are: "FID1", "IID1", "FID2", "IID2", "RT", "EZ", "Z0", "Z1", "Z2", "PI_HAT", "PHE", "DST", "PPC", and "RATIO". **FS means ; PO means parent-offspring; OT means ; UN means unrelated individuals.**
 
-```
+```text
  FID1          IID1   FID2          IID2 RT    EZ      Z0      Z1      Z2  PI_HAT PHE       DST     PPC   RATIO
   28328  502088905174  28328  307365682603 PO   0.5  0.0000  1.0000  0.0000  0.5000   0  0.835098  1.0000 2138.0000
   99407  971064170845  99407  971185421160 PO   0.5  0.0012  0.9877  0.0112  0.5050   0  0.844678  1.0000 1029.7500
@@ -507,14 +508,12 @@ The `.genome` file is a table. The columns are: "FID1", "IID1", "FID2", "IID2", 
 
 **PI_HAT** is Proportion IBD, i.e. P(IBD=2) + 0.5*P(IBD=1). It indicates the "family distance" between the two individuals:
 
-- 1: identical or twins (100% identical) 
+- 1: identical or twins (100% identical)
 - 0.5: parent or child (50% identical)
 - 0.25: cousins
 - we use 0.2 to exclue individuals within the family
 
-
-
-col RT: 
+col RT:
 
 - Relationship type inferred from .fam/.ped file
 - **FS means ; PO means parent-offspring; OT means ; UN means unrelated individuals.**
@@ -527,10 +526,7 @@ Select based on **"PI_HAT"**.
 
 For each row of "PI_HAT" < threshold, there are two IID. We need to check the **MAF** of them to determin which one to be removed from the individuals of study. Normally, we drop the low MAF one.  
 
-
-The data contain family members and we keep them for HLA imputation. 
-
-Because
+The data contain family members and we keep them for HLA imputation. Because
 
 - HLA imputation (like SNP2HLA) does not require unrelated samples.
 - Relatedness does not harm the imputation.
@@ -552,7 +548,7 @@ Output:
 
 If FID1 == FID2 AND PI_HAT ≥ 0.99 → assume true monozygotic twins → KEEP. If FID1 ≠ FID2 with PI_HAT ≈ 1.0 → likely technical duplicate → REMOVE one sample.
 
-Keep only pairs where FID1 ≠ FID2 (i.e., not true twins). Keep PI_HAT ≥ 0.98. Get FID2, IID2 to be the ID to remove. 
+Keep only pairs where FID1 ≠ FID2 (i.e., not true twins). Keep PI_HAT ≥ 0.98. Get FID2, IID2 to be the ID to remove.
 
 ```bash
 awk '($1!=$3) {print $3, $4}' $OUTDIR/qc7_2_duplicates_to_check.txt > $OUTDIR/qc7_3_duplicates_to_remove.txt
