@@ -19,7 +19,7 @@ def read_pca_file(f_path:str) -> pd.DataFrame:
     
     return df
 
-def keep_pca_by_range(df_pca:pd.DataFrame, pc1_p:float, pc1_n:float, pc2_p:float, pc2_n:float) -> pd.DataFrame:
+def remove_pca_by_range(df_pca:pd.DataFrame, pc1_p:float, pc1_n:float, pc2_p:float, pc2_n:float) -> pd.DataFrame:
     """
     df_pca: DataFrame. The dataframe of the PCA file.
     pc1_p: float. The positive range for PC1.
@@ -27,19 +27,19 @@ def keep_pca_by_range(df_pca:pd.DataFrame, pc1_p:float, pc1_n:float, pc2_p:float
     pc2_p: float. The positive range for PC2.
     pc2_n: float. The negative range for PC2.
 
-    Return the df with the PCA data in the specified range.
+    Return the df with the PCA data out of the specified range.
     """
-    df_pca = df_pca[(df_pca["PC1"] > pc1_n) & (df_pca["PC1"] < pc1_p) & (df_pca["PC2"] > pc2_n) & (df_pca["PC2"] < pc2_p)]
+    df_pca = df_pca[(df_pca["PC1"] < pc1_n) | (df_pca["PC1"] > pc1_p) | (df_pca["PC2"] < pc2_n) | (df_pca["PC2"] > pc2_p)]
 
     return df_pca
 
-def save_pca_to_keep(df:pd.DataFrame, save_path:str) -> None:
+def save_pca_to_remove(df:pd.DataFrame, save_path:str) -> None:
     """
-    df: DataFrame. The dataframe of the PCA to keep.
-    save_path: str. The repository to save the PCA data to keep.
+    df: DataFrame. The dataframe of the PCA to remove.
+    save_path: str. The repository to save the PCA data to remove.
         Without "/" in the end.
     """
-    df.to_csv(f"{save_path}/qc8_2_pca_to_keep.txt", sep="\t", index=False)
+    df.to_csv(f"{save_path}/qc8_pca_to_remove.txt", sep="\t", index=False)
 
 
 if __name__ == "__main__":
@@ -71,20 +71,22 @@ if __name__ == "__main__":
     pc1_n = float(sys.argv[3])
     pc2_p = float(sys.argv[4])
     pc2_n = float(sys.argv[5])
-    print("Range for PCA data to keep:")
+    print("Range for PCA data to remove:")
     print(f"pc1_p: {pc1_p}")
     print(f"pc1_n: {pc1_n}")
     print(f"pc2_p: {pc2_p}")
     print(f"pc2_n: {pc2_n}")
     print()
 
-    df_pca_to_keep = keep_pca_by_range(df_pca, pc1_p, pc1_n, pc2_p, pc2_n)
-    print("=== PCA Data to Keep ===")
-    print(df_pca_to_keep.shape)
-    print(df_pca_to_keep.head())
+    # Remove the PCA data by range
+    df_pca_to_remove = remove_pca_by_range(df_pca, pc1_p, pc1_n, pc2_p, pc2_n)
+    print("=== PCA Data to Remove ===")
+    print(df_pca_to_remove.shape)
+    print(df_pca_to_remove.head())
     print()
 
-    # Save the PCA data to keep
-    save_pca_to_keep(df_pca_to_keep, folder)
-    print(f"qc8_2_pca_to_keep.txt is saved in {folder}")
+    # Save the PCA data to remove
+    save_pca_to_remove(df_pca_to_remove, folder)
+    print(f"qc8_pca_to_remove.txt is saved in {folder}")
     print()
+    

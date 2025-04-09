@@ -43,7 +43,7 @@ def save_het_outliers(df:pd.DataFrame, save_path:str) -> None:
         Without "/" in the end.
     """
     # TODO: Do we need to remove the header?
-    df.to_csv(f"{save_path}/qc6_1_heterozygosity_outliers.txt", sep="\t", index=False)
+    df.to_csv(f"{save_path}/qc6_heterozygosity_outliers.txt", sep="\t", index=False)
 
 if __name__ == "__main__":
     

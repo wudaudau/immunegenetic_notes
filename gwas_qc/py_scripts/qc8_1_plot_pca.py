@@ -83,11 +83,12 @@ if __name__ == "__main__":
     print()
 
     # file_path = "task/T20250405_develop_gwas_qc_py_scripts/output/qc8_pca.eigenvec"
-    file_path = sys.argv[1]
-    print(f"file_path: {file_path}")
+    f_eigenvec = sys.argv[1]
+    f_fam = f"{sys.argv[2]}.fam" # Use qc5_pruned without ".fam"
+    print(f"file_path: {f_eigenvec}")
     print()
 
-    file_path = Path(file_path)
+    file_path = Path(f_eigenvec)
     folder = file_path.parent
     f_name = file_path.stem
 
@@ -95,8 +96,6 @@ if __name__ == "__main__":
     print(f"file name: {f_name}")
     print()
 
-    # TODO: We will optimize the code to read the fam file and pca file.
-    f_fam = f"{folder}/qc7_4_duplicate_removed.fam"
     df_fam = read_fam_file(f_fam)
     print("=== Fam Data ===")
     print(df_fam.shape)
