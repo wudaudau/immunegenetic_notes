@@ -575,6 +575,14 @@ Output:
 
 ## QC8 PCA
 
+PCA can view population. We need data of one clean population to impute HLA.
+
+Why do we need to control on pupulation?
+
+- HLA reference panels (like T1DGC, Pan-Asian, etc.) are usually population-specific.
+- If you impute across mixed ancestries, your imputation accuracy will suffer badly.
+- Also, population stratification can confound association results.
+
 ### QC8-1 Run PCA
 
 ```bash
@@ -601,6 +609,8 @@ Output:
 - `qc8_1_pca.png` PCA plot with phenotypes.
 
 ### pca to keep
+
+How to select individuals based on PCA clusters? Manually or automatically define a selection boundary (e.g., PC1 between -0.05 and 0.05, PC2 between -0.1 and 0.1). If we select automatically, we can determin the threshold to exclude the outliers.
 
 We put the range of PC1 pos, PC1 neg, PC2 pos, and PC2 neg. We take PC1 between -0.05 and 0.5 and PC2 between -0.1 and 0.1 in this example.
 
