@@ -23,8 +23,9 @@ missingness/sex check → MAF → HWE → LD pruning → heterozygosity → IBD 
 
 ## References
 
-- There are 7 QC steps. (Table 1 to the article https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608).
-- Part 1 of **GWA_tutorial** (https://github.com/MareesAT/GWA_tutorial). There are instructions in (`1_Main_script_QC_GWAS.txt`). 
+- [Wiley QC Guidelines for GWAS](https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608)
+- [GWA_tutorial GitHub Repository](https://github.com/MareesAT/GWA_tutorial): Particularly Part 1 of **GWA_tutorial**.
+- [PLINK 1.9 Documentation](https://www.cog-genomics.org/plink/1.9/)
 
 ## Before QC
 
@@ -39,7 +40,7 @@ To use the Python scripts, you can clone this repositoy and then copy the `(py s
 
 (in the tuto)
 
-## QC1-1 Missing on Variants
+### QC1-1 Missing on Variants
 
 Delete SNPs with missingness > 2% and generate new bfiles.
 
@@ -69,7 +70,7 @@ The `.hh` file is the list to keep(?) (nonmissing calls).
 ```
 
 
-## QC1-2 Missing On Individuals
+### QC1-2 Missing On Individuals
 
 Use the previous output.
 Delete individuals with missingness > 5%.
@@ -92,7 +93,7 @@ Output:
 In one step
 
 ```bash
-plink --bfile DATASET --geno 0.02 --mind 0.05 --make-bed --out ${OUTDIR}/step1_miss
+plink --bfile DATASET --geno 0.02 --mind 0.05 --make-bed --out ${OUTDIR}/qc1_missing
 ```
 
 ## QC2 Sex
@@ -102,6 +103,8 @@ plink --bfile DATASET --geno 0.02 --mind 0.05 --make-bed --out ${OUTDIR}/step1_m
 Males have only 1 X chromosome, so regarded as homogeneous (F value >0.8). Females have 2 X chromosomes, so there are certain heterogeneous rate (F value < 0.2).
 
 (Overview of this step ...)
+
+### QC 2-1
 
 Check for sex discrepancy.
 
@@ -143,9 +146,7 @@ python PYDIR/qc2_1_sexcheck.py OUTDIR/qc2_1_sexcheck.sexcheck
 Output:
 - `sex_discrepancy.txt`. A list of inidividual to remove.
 
-Remove sex discripency:
-
-- [ ] Do we need to update the file name from `sex_discrepancy.txt` to `qc2_sex_discrepancy.txt`???
+### QC2-2 Remove sex discripency
 
 ```bash
 plink \
@@ -179,6 +180,8 @@ Steps overview:
 - View MAF distribution to determine the low MAF thereshold. (MAF_check).
 - Remove low MAF using `--MAF`.
 
+### QC3-1 Autosomal SNPs only (Chr 1-22)
+
 Select autosomal SNPs only (Chr 1-22) using plink.
 
 ```bash
@@ -193,6 +196,8 @@ Output:
 
 - `.log`
 - new bfiles
+
+### QC3-2 Check MAF on Chr 1-22
 
 Check MAF on Chr 1-22:
 
@@ -223,10 +228,6 @@ CHR         SNP   A1   A2          MAF  NCHROBS
 ```
 
 
-There is a R script to visualize the result in plots (MAF distribution). `MAF_check.R`
-
-- [x] I can create my own script to plot it or to sort the table by MAF or to aggregate the count by MAF. We need to determine the threshold to contraol on MAF. -> `mafcheck.py`
-
 ```bash
 python PYDIR/qc3_2_mafcheck.py OUTDIR/qc3_1_chr1_22_MAF_check.frq 
 ```
@@ -235,6 +236,7 @@ Output:
 
 - `qc3_maf_distribution.png`
 
+### QC3-3 Remove low MAF
 
 Once the MAF threshold is determined, we can drop the low MAF from bfile.
 
@@ -265,14 +267,14 @@ Steps overview:
 - View the HWE distribution (all and below the threshold, respectively).
 - Remove SNPs which are not in HWE from the bfiles (**on all individuals** with a threshold).
 
+### QC4-1 Calculate HWE
+
 ```bash
 plink \
 --bfile OUTDIR/qc3_3_maf002 \
 --hardy \
 --out OUTDIR/qc4_1_maf002_hardy
 ```
-
-- [ ] I might need to update the output file name to prevent the log been overwitten.
 
 Output:
 
@@ -303,6 +305,8 @@ Output:
 - `hwe_distribution.png`
 - `hwe_distribution_below_threshold.png`
 
+### QC4-2 Filter HWE
+
 Filter HWE **on all individuals** using 1e-10 as the threshold. (Add `--hwe-all` to filter HWE on all individuals rather than only control ones.)
 
 Here, because we filter on all individuals instead of on control only, use a small threshold.
@@ -326,6 +330,8 @@ Output:
 ## QC5 LD Pruning
 
 When QC1 to QC4 are done, we can generate the indepSNP tags for the following QC steps.
+
+### QC5-1 Generate indepSNP tags
 
 We need a `inversion.txt` file.
 
@@ -366,7 +372,7 @@ The 50 5 0.5 are:
 - the number of SNPs to shift the window at each step, and 
 - the multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously.
 
-Prun data
+### QC5-2 Prun data
 
 ```bash
 plink \
@@ -383,9 +389,9 @@ Output:
 
 ## QC6 Heterogzygotie
 
-Use `indepSNP.prune.in` to generate pruned the data set.
+On pruned data.
 
-Use the input to generate the indeSNP tag as the input bfile.
+### QC6-1 Calculate Heterozygosity on pruned data
 
 `--het` homozygous genotype counts (https://www.cog-genomics.org/plink/1.9/basic_stats#ibc).
 
@@ -416,6 +422,7 @@ The output `.het` file is a table similar to `--check-sex` or `--hardy` but not 
   ...
 ```
 
+### View Heterozygosity
 
 Plot of the heterozygosity rate distribution.
 
@@ -426,6 +433,8 @@ python PYDIR/qc6_1_heterogenity_check.py OUTDIR/qc6_1_heterogenity_check.het
 Output:
 
 - `heterozygosity.png`
+
+### QC6-2 Identify heterozygosity outliers
 
 The tutorial says that we use 3 SDs to keep individuals with 3SDs. However, accroding to Sigrid, it's better to adjust the histogram to adapte the filter. We may keep all individulas it no weired values and count presented.
 
@@ -441,7 +450,7 @@ Output:
 
 - `heterozygosity_outliers.txt`
 
-Remove heterozygosity outliers.
+### QC6-3 Remove heterozygosity outliers
 
 ```bash
 plink \
@@ -458,7 +467,9 @@ Output:
 
 ## QC7 IBD
 
-Calculate IBD. The inputfile can contain family members. We will evaluate the IBD values to determine which individuals to exclude.
+### QC7-1 Calculate IBD
+
+The inputfile can contain family members. We will evaluate the IBD values to determine which individuals to exclude.
 
 Calculates **identity by descent (IBD)** using `--genome` and based on the LD-based purning (https://www.cog-genomics.org/plink/1.9/ibd).
 
@@ -515,10 +526,12 @@ For each row of "PI_HAT" < threshold, there are two IID. We need to check the **
 The data contain family members and we keep them for HLA imputation. 
 
 Because
+
 - HLA imputation (like SNP2HLA) does not require unrelated samples.
 - Relatedness does not harm the imputation.
 - Family samples might even help a little in imputation because shared haplotypes are more accurately phased.
 
+### QC7-2 Extract potential duplicates
 
 Extract PI_HET > 0.98 to obtain potential duplicates.
 
@@ -530,7 +543,7 @@ Output:
 
 - `qc7_2_duplicates_to_check.txt`
 
-Check duplicates
+### QC7-3 Check duplicates
 
 If FID1 == FID2 AND PI_HAT ≥ 0.99 → assume true monozygotic twins → KEEP. If FID1 ≠ FID2 with PI_HAT ≈ 1.0 → likely technical duplicate → REMOVE one sample.
 
@@ -544,7 +557,7 @@ Output:
 
 - `qc7_3_duplicates_to_remove.txt`
 
-Remove duplicates
+### QC7-4 Remove duplicates
 
 ```bash
 plink --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed \
@@ -560,7 +573,7 @@ Output:
 
 ## QC8 PCA
 
-QC8-1 Run PCA
+### QC8-1 Run PCA
 
 ```bash
 plink --bfile $OUTDIR/qc7_4_duplicate_removed \
@@ -574,7 +587,7 @@ Output:
 - `.eigenval`
 - `.eigenvec`
 
-plot pca
+### Plot PCA
 
 ```bash
 python py_script/qc8_1_plot_pca.py $OUTDIR/qc8_1_pca.eigenvec
@@ -584,7 +597,7 @@ Output:
 
 - `qc8_1_pca.png` PCA plot with phenotypes.
 
-pca to keep. 
+### pca to keep
 
 We put the range of PC1 pos, PC1 neg, PC2 pos, and PC2 neg. We take PC1 between -0.05 and 0.5 and PC2 between -0.1 and 0.1 in this example.
 
@@ -598,7 +611,7 @@ Output:
 
 It's a list of individual with PC1 and PC2 in the range.
 
-QC8-2 keep pca
+### QC8-2 keep pca
 
 ```bash
 plink --bfile $OUTDIR/qc7_4_duplicate_removed --keep $OUTDIR/qc8_2_pca_to_keep.txt --make-bed --out $OUTDIR/qc8_2_pca_done
