@@ -1,5 +1,7 @@
 # README
 
+Once we have done the QC steps, the data is ready for HLA imputation.
+
 https://software.broadinstitute.org/mpg/snp2hla/
 
 (What is it? What does it do?)
