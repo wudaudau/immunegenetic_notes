@@ -4,31 +4,40 @@
 
 It's good to practice step-by-step to learn each QC step.
 
-There are 7 QC steps. (Table 1 to the article https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608).
+The parameters used in this note are for HLA imputation steps, rather than general GWAS.
 
-The QC1 to QC6 are based on the  Part 1 of **GWA_tutorial** (https://github.com/MareesAT/GWA_tutorial). There are instructions in (`1_Main_script_QC_GWAS.txt`). The parameters used in this note are for HLA imputation steps, instead of genera GWAS.
+We keep the family members in the data to impute HLA.
 
-QC7 PCA will be use **smartpca** tool (link to my note).
+## Step overview
+
+missingness/sex check → MAF → HWE → LD pruning → heterozygosity → IBD → PCA
+
+- QC1: Missingness
+- QC2: Sex check
+- QC3: MAF
+- QC4: HWE
+- QC5: LD pruning  
+- QC6: Heterogeneity
+- QC7: IBD
+- QC8: PCA Poplutation 
+
+(QC8 PCA will be use **smartpca** tool (link to my note).)
+
+## References
+
+- There are 7 QC steps. (Table 1 to the article https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608).
+- Part 1 of **GWA_tutorial** (https://github.com/MareesAT/GWA_tutorial). There are instructions in (`1_Main_script_QC_GWAS.txt`). 
+
+## Before QC
+
+- Where are the data source (bfiles) -> DATASET
+- Where are the py_scripts -> PYDIR
+- Where is `inversion.txt` -> INVERSIONTXT
+- Where are the output directory -> OUTDIR
 
 To use the Python scripts, you can clone this repositoy and then copy the `(py scripts reposity)` to (`/work/clwu/GWA_tutorial/`).
 
-
-## Working directory
-
-`/work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/`
-
-Data in `data`. Make a copy to the working directory to get started.
-
-```bash
-plink \
---bfile /data/clwu/demo/LEAP_FreezeV3_1563_May2020_PSC2 \
---make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc0_source_file 
-```
-
-It is also the output directory. All the generated files will be here.
-
-## QC1 View Missing
+## QC1 Missingness
 
 (in the tuto)
 
@@ -40,10 +49,10 @@ Delete SNPs with missingness > 2% and generate new bfiles.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc0_source_file \
+--bfile DATASET \
 --geno 0.02 \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc1_1_geno002
+--out OUTDIR/qc1_1_geno002
 ```
 
 Output:
@@ -69,10 +78,10 @@ Delete individuals with missingness > 5%.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc1_1_geno002 \
+--bfile OUTDIR/qc1_1_geno002 \
 --mind 0.05 \
 --make-bed \
---out  /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc1_2_mind005
+--out  OUTDIR/qc1_2_mind005
 ```
 
 Output:
@@ -82,9 +91,17 @@ Output:
 - `.irem` FID and IID of the removed individuals (https://www.cog-genomics.org/plink/1.9/output).
 
 
+In one step
+
+```bash
+plink --bfile DATASET --geno 0.02 --mind 0.05 --make-bed --out ${OUTDIR}/step1_miss
+```
+
 ## QC2 Sex
 
-> Subjects who were a priori determined as females must have a F value of <0.2, and subjects who were a priori determined as males must have a F value >0.8. This F value is based on the X chromosome inbreeding (homozygosity) estimate.
+> Subjects who were a priori determined as females must have a F value of <0.2, and subjects who were a priori determined as males must have a F value >0.8. This F value is based on the X chromosome inbreeding (homozygosity) estimate. 
+
+Males have only 1 X chromosome, so regarded as homogeneous (F value >0.8). Females have 2 X chromosomes, so there are certain heterogeneous rate (F value < 0.2).
 
 (Overview of this step ...)
 
@@ -92,9 +109,9 @@ Check for sex discrepancy.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc1_2_mind005 \
+--bfile OUTDIR/qc1_2_mind005 \
 --check-sex \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc2_sexcheck
+--out OUTDIR/qc2_1_sexcheck
 ```
 
 (https://www.cog-genomics.org/plink/1.9/basic_stats#check_sex)
@@ -122,7 +139,7 @@ How to make it? Based on `.sexcheck` file :
 Generate `sex_discrepancy.txt` using my Py script (there are some details in the scripts):
 
 ```bash
-python /work/clwu/GWA_tutorial/py_scripts/sexcheck.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc2_sexcheck.sexcheck
+python PYDIR/qc2_1_sexcheck.py OUTDIR/qc2_1_sexcheck.sexcheck
 ```
 
 Output:
@@ -134,10 +151,10 @@ Remove sex discripency:
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc1_2_mind005 \
---remove /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/sex_discrepancy.txt \
+--bfile OUTDIR/qc1_2_mind005 \
+--remove OUTDIR/qc2_sex_discrepancy.txt \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc2_rmsexdic
+--out OUTDIR/qc2_2_rmsexdic
 ```
 
 Output:
@@ -150,6 +167,13 @@ Output:
 > Generate a bfile with autosomal SNPs only and delete SNPs with a low minor allele frequency (MAF).
 > A conventional MAF threshold for a regular GWAS is between 0.01 or 0.05, depending on sample size.
 
+General cases: 
+
+- Sample size big (how big???), use low threshold (e.g. 0.01).
+- Sample size small, use high threshold (e.g. 0.05).
+
+We have ~1000 individuals, use 0.02 as the threshold (1000 * 0.02 = 20).
+
 Steps overview:
 
 - Only focus on autosomal SNPs (Chr 1-22).
@@ -161,10 +185,10 @@ Select autosomal SNPs only (Chr 1-22) using plink.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc2_rmsexdic \
+--bfile OUTDIR/qc2_2_rmsexdic \
 --chr 1-22 \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_1_chr1_22
+--out OUTDIR/qc3_1_chr1_22
 ```
 
 Output:
@@ -177,9 +201,9 @@ Check MAF on Chr 1-22:
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_1_chr1_22 \
+--bfile OUTDIR/qc3_1_chr1_22 \
 --freq \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_1_chr1_22_MAF_check
+--out OUTDIR/qc3_2_chr1_22_MAF_check
 ```
 
 Output:
@@ -206,7 +230,7 @@ There is a R script to visualize the result in plots (MAF distribution). `MAF_ch
 - [x] I can create my own script to plot it or to sort the table by MAF or to aggregate the count by MAF. We need to determine the threshold to contraol on MAF. -> `mafcheck.py`
 
 ```bash
-python /work/clwu/GWA_tutorial/py_scripts/mafcheck.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_1_chr1_22_MAF_check.frq 
+python PYDIR/qc3_2_mafcheck.py OUTDIR/qc3_1_chr1_22_MAF_check.frq 
 ```
 
 Output:
@@ -216,14 +240,14 @@ Output:
 
 Once the MAF threshold is determined, we can drop the low MAF from bfile.
 
-Remove low MAF (0.01):
+Remove low MAF (0.02):
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_1_chr1_22 \
---maf 0.01 \
+--bfile OUTDIR/qc3_1_chr1_22 \
+--maf 0.02 \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001
+--out OUTDIR/qc3_3_maf002
 ```
 
 Output:
@@ -245,9 +269,9 @@ Steps overview:
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
+--bfile OUTDIR/qc3_3_maf002 \
 --hardy \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_hardy
+--out OUTDIR/qc4_1_maf002_hardy
 ```
 
 - [ ] I might need to update the output file name to prevent the log been overwitten.
@@ -273,7 +297,7 @@ CHR         SNP     TEST   A1   A2                 GENO   O(HET)   E(HET)       
 Run the `hwe.py` to generate the hwe (P) and zoomhwe **(P < 0.00001)** in histograms (Histogram HWE and Histogram HWE: strongly deviating SNPs only) in the output folder.
 
 ```bash
-python /work/clwu/GWA_tutorial/py_scripts/hwe.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001_hardy.hwe
+python PYDIR/qc4_1_hwe.py OUTDIR/qc4_1_maf002_hardy.hwe
 ```
 
 Output:
@@ -289,11 +313,11 @@ The general steps would be to filtre more strickly (p value below 1e-6) on the c
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc3_2_maf001 \
+--bfile OUTDIR/qc3_3_maf002 \
 --hwe 1e-10 \
 --hwe-all \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10
+--out OUTDIR/qc4_2_hweall1em10
 ```
 
 Output:
@@ -301,7 +325,7 @@ Output:
 - `.log`
 - new bfiles
 
-## Generate indepSNP tags
+## QC5 LD Pruning
 
 When QC1 to QC4 are done, we can generate the indepSNP tags for the following QC steps.
 
@@ -319,11 +343,11 @@ There are complexe gene regions. We skip them to make the indepSNP tags.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
+--bfile OUTDIR/qc4_2_hweall1em10 \
 --exclude /work/clwu/GWA_tutorial/1_QC_GWAS/inversion.txt \
 --range \
 --indep-pairwise 50 5 0.5 \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP
+--out OUTDIR/qc5_indepSNP
 ```
 
 Output:
@@ -334,6 +358,8 @@ Output:
 
 These commands produce a pruned subset of markers that are in approximate linkage equilibrium with each other, writing the IDs to plink.prune.in (and the IDs of all excluded variants to plink.prune.out). We will use theses file in later steps of QCs.
 
+**Linkage disequilibrium (LD)**, association of alleles on the same chromosome. 
+
 Use 0.5 instead of 0.2 here.
 
 The 50 5 0.5 are:
@@ -342,7 +368,19 @@ The 50 5 0.5 are:
 - the number of SNPs to shift the window at each step, and 
 - the multiple correlation coefficient for a SNP being regressed on all other SNPs simultaneously.
 
-## QC5 Heterogzygotie
+Prun data
+
+```bash
+plink \
+--bfile $OUTDIR/qc4_2_hweall1em10 \
+--extract $OUTDIR/qc5_indepSNP.prune.in \
+--make-bed \
+--out $OUTDIR/qc5_pruned
+```
+
+
+
+## QC6 Heterogzygotie
 
 Use `indepSNP.prune.in` to generate pruned the data set.
 
@@ -354,10 +392,9 @@ Use the input to generate the indeSNP tag as the input bfile.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
---extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
+--bfile OUTDIR/qc5_pruned \
 --het \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check
+--out OUTDIR/qc6_1_heterogenity_check
 ```
 
 Output:
@@ -367,7 +404,7 @@ Output:
 
 `--het` is a statistical option computes observed and expected autosomal homozygous genotype counts for each sample, and reports method-of-moments F coefficient estimates (i.e. (<observed hom. count> - <expected count>) / (<total observations> - <expected count>)) to plink.het. 
 
-The output `.het` file is a table similar to `--hardy` but not exactly. The columns are: "FID", "IID", "O(HOM)", "E(HOM)", "N(NM)", "F". This file contains your pruned data set.
+The output `.het` file is a table similar to `--check-sex` or `--hardy` but not exactly. The columns are: "FID", "IID", "O(HOM)", "E(HOM)", "N(NM)", "F". This file contains your pruned data set.
 
 ```
   FID            IID       O(HOM)       E(HOM)        N(NM)            F
@@ -382,7 +419,7 @@ The output `.het` file is a table similar to `--hardy` but not exactly. The colu
 Plot of the heterozygosity rate distribution.
 
 ```bash
-python /work/clwu/GWA_tutorial/py_scripts/qc5_heterogenity_check.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check.het
+python PYDIR/qc6_1_heterogenity_check.py OUTDIR/qc6_1_heterogenity_check.het
 ```
 
 Output:
@@ -396,7 +433,7 @@ There sould be someting to get a list of individuals to extract or to exclude. -
 Use the following script to generate a outlier list with None as the threshold. ("3sd")
 
 ```bash
-python /work/clwu/GWA_tutorial/py_scripts/qc5_heterogenity_outlier.py /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_homozygous_check.het None
+python PYDIR/qc6_1_heterogenity_outlier.py OUTDIR/qc6_1_heterogenity_check.het None
 ```
 
 Output:
@@ -407,10 +444,10 @@ Remove heterozygosity outliers.
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
---remove /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/heterozygosity_outliers.txt \
+--bfile OUTDIR/qc5_pruned \
+--remove OUTDIR/qc6_1_heterozygosity_outliers.txt \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_no_heterozygosity_outliers
+--out OUTDIR/qc6_2_heterozygosity_outliers_removed
 ```
 
 Output:
@@ -418,7 +455,7 @@ Output:
 - `.log`
 - new bfiles
 
-## QC6 IBD
+## QC7 IBD
 
 Calculate IBD. The inputfile can contain family members. We will evaluate the IBD values to determine which individuals to exclude.
 
@@ -426,120 +463,120 @@ Calculates **identity by descent (IBD)** using `--genome` and based on the LD-ba
 
 ```bash
 plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc5_no_heterozygosity_outliers \
---extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
+--bfile OUTDIR/qc6_2_heterozygosity_outliers_removed \
 --genome \
---min 0.2 \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc6_pihat_min0.2
+--out OUTDIR/qc7_1_pihat
 ```
+
+Output:
+
+- `.log`
+- `.genome`
+
+`--genome` invokes an IBS/IBD computation over autosomal SNPs (so chrX, chrY, and chrM are excluded), and then writes a report with the following fields to a `.genome` file. `--min` removes "PI_HAT" values below the given cutoff. (https://www.cog-genomics.org/plink/1.9/ibd)
 
 The `.genome` file is a table. The columns are: "FID1", "IID1", "FID2", "IID2", "RT", "EZ", "Z0", "Z1", "Z2", "PI_HAT", "PHE", "DST", "PPC", and "RATIO". **FS means ; PO means parent-offspring; OT means ; UN means unrelated individuals.**
 
 ```
+ FID1          IID1   FID2          IID2 RT    EZ      Z0      Z1      Z2  PI_HAT PHE       DST     PPC   RATIO
+  28328  502088905174  28328  307365682603 PO   0.5  0.0000  1.0000  0.0000  0.5000   0  0.835098  1.0000 2138.0000
+  99407  971064170845  99407  971185421160 PO   0.5  0.0012  0.9877  0.0112  0.5050   0  0.844678  1.0000 1029.7500
+  94811  869570533760  94811  762689081855 PO   0.5  0.0000  1.0000  0.0000  0.5000   0  0.831812  1.0000 805.2000
+  19967  957070122174  19967  686924389939 PO   0.5  0.0006  0.9794  0.0200  0.5097   0  0.846123  1.0000 2060.5000
+  55266  665620090147  66647  153562611492 UN    NA  0.5451  0.4549  0.0000  0.2274  -1  0.772260  1.0000  2.9549
+  35898  778566416157  35898  219811218558 PO   0.5  0.0007  0.9851  0.0143  0.5068   0  0.845211  1.0000      NA
+  ...
 ```
+
+**PI_HAT** is Proportion IBD, i.e. P(IBD=2) + 0.5*P(IBD=1). It indicates the "family distance" between the two individuals:
+
+- 1: identical or twins (100% identical) 
+- 0.5: parent or child (50% identical)
+- 0.25: cousins
+- we use 0.2 to exclue individuals within the family
+
+
+
+col RT: 
+
+- Relationship type inferred from .fam/.ped file
+- **FS means ; PO means parent-offspring; OT means ; UN means unrelated individuals.**
+
+col EZ:
+
+- IBD sharing expected value, based on just .fam/.ped relationship
 
 Select based on **"PI_HAT"**.
 
-For each row of "PI_HAT" < threshole, there are two IID. We need to check the MAF of them to determin which one to be removed from the individuals of study. Normally, we drop the low MAF one.  
-
-For each row of "PI_HAT" < threshole, there are two IID. We need to check the MAF of them to determin which one to be removed from the individuals of study. Normally, we drop the low MAF one.  
+For each row of "PI_HAT" < threshold, there are two IID. We need to check the **MAF** of them to determin which one to be removed from the individuals of study. Normally, we drop the low MAF one.  
 
 
-### How to get participant list
+The data contain family members and we keep them for HLA imputation. 
 
-QC1-1 log:
+Because
+- HLA imputation (like SNP2HLA) does not require unrelated samples.
+- Relatedness does not harm the imputation.
+- Family samples might even help a little in imputation because shared haplotypes are more accurately phased.
 
-```
-1566 people (846 males, 720 females) loaded from .fam.
-700 phenotype values loaded from .fam.
-Using 1 thread (no multithreaded calculations invoked).
-Before main variant filters, 1028 founders and 538 nonfounders present.
-```
 
-**Founders** are those PID and MID is 0. Which means they are the **parents**.
-
-LEAP_FreezeV3_1566_May2020_PSC2.fam:
-
-```
-Groupby P Count:
-    FID  IID  PID  MID  Sex    6
-P                               
--9  866  866  866  866  866  866
- 1  287  287  287  287  287  287
- 2  413  413  413  413  413  413
-```
-
-The "P" in `.fam` file is a better indicator to select the participants.
-
-Since the founders are not accosiated to the phenotypes, **do not use** `--filter-founders --make-bed --out ` to remove ...
-
-I want to get the IDs based on "P". Keep only value is 1 or 2. -> There is a `participant_IDs.csv` in the output repository.
-
-Of note, last time when I did QC, the participant are based on a table from AIMS to indicate participants. Amount the "participant", there are "P" == 9 in the `.fam` file we can see them on the pca plot.
-
-### QC7 PCA with PLINK
-
-We need:
-
-- participant only (`participant_IDs.csv`) (Use `--require-pheno`?)
-- indepSNP tag
-
-Keep participant only:
+Extract PI_HET > 0.98 to obtain potential duplicates.
 
 ```bash
-plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
---keep /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/participant_IDs.csv \
+awk '$10 > 0.98' $OUTDIR/qc7_1_pihat.genome > $OUTDIR/qc7_2_duplicates_to_check.txt
+```
+
+Check duplicates
+
+If FID1 == FID2 AND PI_HAT ≥ 0.99 → assume true monozygotic twins → KEEP. If FID1 ≠ FID2 with PI_HAT ≈ 1.0 → likely technical duplicate → REMOVE one sample.
+
+Keep only pairs where FID1 ≠ FID2 (i.e., not true twins). Keep PI_HAT ≥ 0.98. Get FID2, IID2 to be the ID to remove. 
+
+```bash
+awk '($1!=$3) {print $3, $4}' $OUTDIR/qc7_2_duplicates_to_check.txt > $OUTDIR/qc7_3_duplicates_to_remove.txt
+```
+
+Remove duplicates
+
+```bash
+plink --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed \
+--remove $OUTDIR/qc7_3_duplicates_to_remove.txt \
 --make-bed \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_1_participant_only
+--out $OUTDIR/qc7_4_duplicate_removed
 ```
 
-PCA on the participant only
+## QC8 PCA
+
+QC8-1 Run PCA
 
 ```bash
-plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_1_participant_only \
---extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
+plink --bfile $OUTDIR/qc7_4_duplicate_removed \
 --pca \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_2_pca \
---maf 0.05
+--out $OUTDIR/qc8_1_pca
 ```
 
-(No PCA results using Plink if without MAF adjustion)
-(`smartpca` has no problem without MAF adjustion)
-
-- [ ] Try can we do the pca in one step:
+plot pca
 
 ```bash
-plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10 \
---keep /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/participant_IDs.csv \
---extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
---pca \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_pca 
+python py_script/qc8_1_plot_pca.py $OUTDIR/qc8_1_pca.eigenvec
 ```
 
+pca to keep. 
 
-
-
-
-
-
-
-## Convert to ped/map
-
-Generate `.ped` and `.map` to run **smartpca**.
-
-`--recode` is the call to convert to ped/map (https://www.cog-genomics.org/plink/1.9/data#recode).
-
-Use the same input as the plink pca
+We put the range of PC1 pos, PC1 neg, PC2 pos, and PC2 neg. We take PC1 between -0.05 and 0.5 and PC2 between -0.1 and 0.1 in this example.
 
 ```bash
-plink \
---bfile /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_1_participant_only \
---extract /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc4_hweall1em10_indepSNP.prune.in \
---recode \
---out /work/clwu/GWA_tutorial/output/LEAP_FreezeV3_1563_May2020_PSC2_QC/qc7_3_recode_pedmap 
+python py_script/qc8_2_pca_to_keep.py $OUTDIR/qc8_1_pca.eigenvec 0.05 -0.05 0.1 -0.1
 ```
 
+Output:
+
+- `qc8_2_pca_to_keep.txt`
+
+It's a list of individual with PC1 and PC2 in the range.
+
+QC8-2 keep pca
+
+```bash
+plink --bfile $OUTDIR/qc7_4_duplicate_removed --keep $OUTDIR/qc8_2_pca_to_keep.txt --make-bed --out $OUTDIR/qc8_2_pca_done
+```
 
