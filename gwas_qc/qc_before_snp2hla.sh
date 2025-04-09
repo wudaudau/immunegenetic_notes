@@ -95,7 +95,7 @@ plink --bfile $OUTDIR/qc5_pruned --remove $OUTDIR/qc6_1_heterozygosity_outliers.
 # QC7-1 Calculate IBD
 plink --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed --genome --out $OUTDIR/qc7_1_pihat
 
-# QC7-2 Extract 
+# QC7-2 Extract potential duplicates
 awk '$10 > 0.98' $OUTDIR/qc7_1_pihat.genome > $OUTDIR/qc7_2_duplicates_to_check.txt
 
 # QC7-3 Check duplicates
