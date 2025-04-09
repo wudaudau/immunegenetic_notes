@@ -24,6 +24,7 @@ plink --bfile $DATASET --geno $GENO --make-bed --out $OUTDIR/qc1_1_geno
 # QC1-2 Individuals
 plink --bfile $OUTDIR/qc1_1_geno --mind $MIND --make-bed --out $OUTDIR/qc1_2_mind
 
+
 # QC2 Sex
 
 # QC2-1
