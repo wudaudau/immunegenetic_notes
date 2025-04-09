@@ -48,10 +48,10 @@ Delete SNPs with missingness > 2% and generate new bfiles.
 
 ```bash
 plink \
---bfile DATASET \
---geno 0.02 \
---make-bed \
---out OUTDIR/qc1_1_geno002
+  --bfile DATASET \
+  --geno 0.02 \
+  --make-bed \
+  --out OUTDIR/qc1_1_geno002
 ```
 
 Output:
@@ -77,10 +77,10 @@ Delete individuals with missingness > 5%.
 
 ```bash
 plink \
---bfile OUTDIR/qc1_1_geno002 \
---mind 0.05 \
---make-bed \
---out  OUTDIR/qc1_2_mind005
+  --bfile OUTDIR/qc1_1_geno002 \
+  --mind 0.05 \
+  --make-bed \
+  --out  OUTDIR/qc1_2_mind005
 ```
 
 Output:
@@ -93,7 +93,12 @@ Output:
 In one step
 
 ```bash
-plink --bfile DATASET --geno 0.02 --mind 0.05 --make-bed --out ${OUTDIR}/qc1_missing
+plink \
+  --bfile DATASET \
+  --geno 0.02 
+  --mind 0.05 \
+  --make-bed \
+  --out ${OUTDIR}/qc1_missing
 ```
 
 ## QC2 Sex
@@ -110,9 +115,9 @@ Check for sex discrepancy.
 
 ```bash
 plink \
---bfile OUTDIR/qc1_2_mind005 \
---check-sex \
---out OUTDIR/qc2_1_sexcheck
+  --bfile OUTDIR/qc1_2_mind005 \
+  --check-sex \
+  --out OUTDIR/qc2_1_sexcheck
 ```
 
 (https://www.cog-genomics.org/plink/1.9/basic_stats#check_sex)
@@ -150,10 +155,10 @@ Output:
 
 ```bash
 plink \
---bfile OUTDIR/qc1_2_mind005 \
---remove OUTDIR/qc2_sex_discrepancy.txt \
---make-bed \
---out OUTDIR/qc2_2_rmsexdic
+  --bfile OUTDIR/qc1_2_mind005 \
+  --remove OUTDIR/qc2_sex_discrepancy.txt \
+  --make-bed \
+  --out OUTDIR/qc2_2_rmsexdic
 ```
 
 Output:
@@ -186,10 +191,10 @@ Select autosomal SNPs only (Chr 1-22) using plink.
 
 ```bash
 plink \
---bfile OUTDIR/qc2_2_rmsexdic \
---chr 1-22 \
---make-bed \
---out OUTDIR/qc3_1_chr1_22
+  --bfile OUTDIR/qc2_2_rmsexdic \
+  --chr 1-22 \
+  --make-bed \
+  --out OUTDIR/qc3_1_chr1_22
 ```
 
 Output:
@@ -204,9 +209,9 @@ Check MAF on Chr 1-22:
 
 ```bash
 plink \
---bfile OUTDIR/qc3_1_chr1_22 \
---freq \
---out OUTDIR/qc3_2_chr1_22_MAF_check
+  --bfile OUTDIR/qc3_1_chr1_22 \
+  --freq \
+  --out OUTDIR/qc3_2_chr1_22_MAF_check
 ```
 
 Output:
@@ -244,10 +249,10 @@ Remove low MAF (0.02):
 
 ```bash
 plink \
---bfile OUTDIR/qc3_1_chr1_22 \
---maf 0.02 \
---make-bed \
---out OUTDIR/qc3_3_maf002
+  --bfile OUTDIR/qc3_1_chr1_22 \
+  --maf 0.02 \
+  --make-bed \
+  --out OUTDIR/qc3_3_maf002
 ```
 
 Output:
@@ -271,9 +276,9 @@ Steps overview:
 
 ```bash
 plink \
---bfile OUTDIR/qc3_3_maf002 \
---hardy \
---out OUTDIR/qc4_1_maf002_hardy
+  --bfile OUTDIR/qc3_3_maf002 \
+  --hardy \
+  --out OUTDIR/qc4_1_maf002_hardy
 ```
 
 Output:
@@ -315,11 +320,11 @@ The general steps would be to filtre more strickly (p value below 1e-6) on the c
 
 ```bash
 plink \
---bfile OUTDIR/qc3_3_maf002 \
---hwe 1e-10 \
---hwe-all \
---make-bed \
---out OUTDIR/qc4_2_hweall1em10
+  --bfile OUTDIR/qc3_3_maf002 \
+  --hwe 1e-10 \
+  --hwe-all \
+  --make-bed \
+  --out OUTDIR/qc4_2_hweall1em10
 ```
 
 Output:
@@ -347,11 +352,11 @@ There are complexe gene regions. We skip them to make the indepSNP tags.
 
 ```bash
 plink \
---bfile OUTDIR/qc4_2_hweall1em10 \
---exclude /work/clwu/GWA_tutorial/1_QC_GWAS/inversion.txt \
---range \
---indep-pairwise 50 5 0.5 \
---out OUTDIR/qc5_indepSNP
+  --bfile OUTDIR/qc4_2_hweall1em10 \
+  --exclude /work/clwu/GWA_tutorial/1_QC_GWAS/inversion.txt \
+  --range \
+  --indep-pairwise 50 5 0.5 \
+  --out OUTDIR/qc5_indepSNP
 ```
 
 Output:
@@ -376,10 +381,10 @@ The 50 5 0.5 are:
 
 ```bash
 plink \
---bfile $OUTDIR/qc4_2_hweall1em10 \
---extract $OUTDIR/qc5_indepSNP.prune.in \
---make-bed \
---out $OUTDIR/qc5_pruned
+  --bfile $OUTDIR/qc4_2_hweall1em10 \
+  --extract $OUTDIR/qc5_indepSNP.prune.in \
+  --make-bed \
+  --out $OUTDIR/qc5_pruned
 ```
 
 Output:
@@ -399,9 +404,9 @@ On pruned data.
 
 ```bash
 plink \
---bfile OUTDIR/qc5_pruned \
---het \
---out OUTDIR/qc6_1_heterogenity_check
+  --bfile OUTDIR/qc5_pruned \
+  --het \
+  --out OUTDIR/qc6_1_heterogenity_check
 ```
 
 Output:
@@ -454,10 +459,10 @@ Output:
 
 ```bash
 plink \
---bfile OUTDIR/qc5_pruned \
---remove OUTDIR/qc6_1_heterozygosity_outliers.txt \
---make-bed \
---out OUTDIR/qc6_2_heterozygosity_outliers_removed
+  --bfile OUTDIR/qc5_pruned \
+  --remove OUTDIR/qc6_1_heterozygosity_outliers.txt \
+  --make-bed \
+  --out OUTDIR/qc6_2_heterozygosity_outliers_removed
 ```
 
 Output:
@@ -475,9 +480,9 @@ Calculates **identity by descent (IBD)** using `--genome` and based on the LD-ba
 
 ```bash
 plink \
---bfile OUTDIR/qc6_2_heterozygosity_outliers_removed \
---genome \
---out OUTDIR/qc7_1_pihat
+  --bfile OUTDIR/qc6_2_heterozygosity_outliers_removed \
+  --genome \
+  --out OUTDIR/qc7_1_pihat
 ```
 
 Output:
@@ -560,10 +565,11 @@ Output:
 ### QC7-4 Remove duplicates
 
 ```bash
-plink --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed \
---remove $OUTDIR/qc7_3_duplicates_to_remove.txt \
---make-bed \
---out $OUTDIR/qc7_4_duplicate_removed
+plink \
+  --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed \
+  --remove $OUTDIR/qc7_3_duplicates_to_remove.txt \
+  --make-bed \
+  --out $OUTDIR/qc7_4_duplicate_removed
 ```
 
 Output:
@@ -576,9 +582,10 @@ Output:
 ### QC8-1 Run PCA
 
 ```bash
-plink --bfile $OUTDIR/qc7_4_duplicate_removed \
---pca \
---out $OUTDIR/qc8_1_pca
+plink \
+  --bfile $OUTDIR/qc7_4_duplicate_removed \
+  --pca \
+  --out $OUTDIR/qc8_1_pca
 ```
 
 Output:
@@ -614,7 +621,11 @@ It's a list of individual with PC1 and PC2 in the range.
 ### QC8-2 keep pca
 
 ```bash
-plink --bfile $OUTDIR/qc7_4_duplicate_removed --keep $OUTDIR/qc8_2_pca_to_keep.txt --make-bed --out $OUTDIR/qc8_2_pca_done
+plink \
+  --bfile $OUTDIR/qc7_4_duplicate_removed \
+  --keep $OUTDIR/qc8_2_pca_to_keep.txt \
+  --make-bed \
+  --out $OUTDIR/qc8_2_pca_done
 ```
 
 Output:
