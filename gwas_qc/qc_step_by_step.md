@@ -23,7 +23,7 @@ missingness/sex check → MAF → HWE → LD pruning → heterozygosity → IBD 
 
 ## References
 
-- [Wiley QC Guidelines for GWAS](https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608)
+- [Marees AT, de Kluiver H, Stringer S, et al. A tutorial on conducting genome-wide association studies: Quality control and statistical analysis. Int J Methods Psychiatr Res. 2018; 27:e1608. https://doi.org/10.1002/mpr.1608](https://onlinelibrary.wiley.com/doi/10.1002/mpr.1608)
 - [GWA_tutorial GitHub Repository](https://github.com/MareesAT/GWA_tutorial): Particularly Part 1 of **GWA_tutorial**.
 - [PLINK 1.9 Documentation](https://www.cog-genomics.org/plink/1.9/)
 
@@ -34,7 +34,23 @@ missingness/sex check → MAF → HWE → LD pruning → heterozygosity → IBD 
 - **INVERSIONTXT**: A file listing genomic regions with known inversions.
 - **OUTDIR**: Output directory where QC results will be stored.
 
-To use the Python scripts, you can clone this repositoy and then copy the `(py scripts reposity)` to (`/work/clwu/GWA_tutorial/`).
+To use the Python scripts, you can clone this whole repositoy and then copy the `(py scripts reposity)` to (`/work/clwu/GWA_tutorial/`).
+
+```bash
+git clone https://github.com/wudaudau/immunegenetic_notes.git
+```
+
+Copy to
+
+```bash
+cp -r immunegenetic_notes/gwas_qc/py_scripts /your/target/folder/
+```
+
+Remove the cloned repo.
+
+```bash
+rm -rf immunegenetic_notes
+```
 
 ## QC1 Missingness
 
@@ -90,16 +106,18 @@ Output:
 - `.hh`  (heterozygous haploid and nonmale Y chromosome call list) (https://www.cog-genomics.org/plink/1.9/formats#hh)
 - `.irem` FID and IID of the removed individuals (https://www.cog-genomics.org/plink/1.9/output).
 
-In one step
+`.irem` file
 
-```bash
-plink \
-  --bfile DATASET \
-  --geno 0.02 \
-  --mind 0.05 \
-  --make-bed \
-  --out ${OUTDIR}/qc1_missing
+```text
+73531   230740255025
+55618   796985110241
+99493   943052269428
+59967   980380935550
+14944   538947876752
+...
 ```
+
+Do no remove missing with `--geno` and `--mind` in one-setp command. PLINK remove individuals in prior to SNPs. Marees et al. suggest that SNP filtering should be performed before individual filtering (Table 1).
 
 ## QC2 Sex
 
