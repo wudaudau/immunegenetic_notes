@@ -1,7 +1,5 @@
 # QCs - step-by-step
 
-(still in editing)
-
 It's good to practice step-by-step to learn each QC step.
 
 The parameters used in this note are for HLA imputation steps, rather than general GWAS.
@@ -352,9 +350,9 @@ plink \
 
 Output:
 
-- `qc4_hweall1em10_indepSNP.log`
-- `qc4_hweall1em10_indepSNP.prune.in` (exclude)
-- `qc4_hweall1em10_indepSNP.prune.out` (include)
+- `qc5_indepSNP.log`
+- `qc5_indepSNP.prune.in` (exclude)
+- `qc5_indepSNP.prune.out` (include)
 
 These commands produce a pruned subset of markers that are in approximate linkage equilibrium with each other, writing the IDs to plink.prune.in (and the IDs of all excluded variants to plink.prune.out). We will use theses file in later steps of QCs.
 
@@ -378,7 +376,10 @@ plink \
 --out $OUTDIR/qc5_pruned
 ```
 
+Output:
 
+- `.log`
+- new bfiles
 
 ## QC6 Heterogzygotie
 
@@ -525,6 +526,10 @@ Extract PI_HET > 0.98 to obtain potential duplicates.
 awk '$10 > 0.98' $OUTDIR/qc7_1_pihat.genome > $OUTDIR/qc7_2_duplicates_to_check.txt
 ```
 
+Output:
+
+- `qc7_2_duplicates_to_check.txt`
+
 Check duplicates
 
 If FID1 == FID2 AND PI_HAT ≥ 0.99 → assume true monozygotic twins → KEEP. If FID1 ≠ FID2 with PI_HAT ≈ 1.0 → likely technical duplicate → REMOVE one sample.
@@ -535,6 +540,10 @@ Keep only pairs where FID1 ≠ FID2 (i.e., not true twins). Keep PI_HAT ≥ 0.98
 awk '($1!=$3) {print $3, $4}' $OUTDIR/qc7_2_duplicates_to_check.txt > $OUTDIR/qc7_3_duplicates_to_remove.txt
 ```
 
+Output:
+
+- `qc7_3_duplicates_to_remove.txt`
+
 Remove duplicates
 
 ```bash
@@ -543,6 +552,11 @@ plink --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed \
 --make-bed \
 --out $OUTDIR/qc7_4_duplicate_removed
 ```
+
+Output:
+
+- `.log`
+- new bfiles
 
 ## QC8 PCA
 
@@ -554,11 +568,21 @@ plink --bfile $OUTDIR/qc7_4_duplicate_removed \
 --out $OUTDIR/qc8_1_pca
 ```
 
+Output:
+
+- `.log`
+- `.eigenval`
+- `.eigenvec`
+
 plot pca
 
 ```bash
 python py_script/qc8_1_plot_pca.py $OUTDIR/qc8_1_pca.eigenvec
 ```
+
+Output:
+
+- `qc8_1_pca.png` PCA plot with phenotypes.
 
 pca to keep. 
 
@@ -580,3 +604,7 @@ QC8-2 keep pca
 plink --bfile $OUTDIR/qc7_4_duplicate_removed --keep $OUTDIR/qc8_2_pca_to_keep.txt --make-bed --out $OUTDIR/qc8_2_pca_done
 ```
 
+Output:
+
+- `.log`
+- new bfiles
