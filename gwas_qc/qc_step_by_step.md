@@ -29,10 +29,10 @@ missingness/sex check → MAF → HWE → LD pruning → heterozygosity → IBD 
 
 ## Before QC
 
-- Where are the data source (bfiles) -> DATASET
-- Where are the py_scripts -> PYDIR
-- Where is `inversion.txt` -> INVERSIONTXT
-- Where are the output directory -> OUTDIR
+- **DATASET**: Input genotype files in PLINK binary format (.bed, .bim, .fam).
+- **PYDIR**: Directory containing Python scripts used during QC.
+- **INVERSIONTXT**: A file listing genomic regions with known inversions.
+- **OUTDIR**: Output directory where QC results will be stored.
 
 To use the Python scripts, you can clone this repositoy and then copy the `(py scripts reposity)` to (`/work/clwu/GWA_tutorial/`).
 
