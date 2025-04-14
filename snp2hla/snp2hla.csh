@@ -7,8 +7,8 @@ REFFILE="/work/clwu/SNP2HLA/SNP2HLA_package_v1.0.3/SNP2HLA/HM_CEU_REF"
 #REFFILE="/work/clwu/SNP2HLA/SNP2HLA_package_v1.0.3/SNP2HLA/T1DGC_REF"
 OUTDIR="/work/clwu/SNP2HLA/SNP2HLA_package_v1.0.3/SNP2HLA/output/LEAP_FreezeV3_1563_May2020_PSC2_HM_CEU_REF"
 PLINK="plink"
-
-
+max_memory=80000 # [mb] (default java mamory = 2Gb, marker window size = 1000)
+window_size=1000 # [bp] (default java mamory = 2Gb, marker window size = 1000)
 
 
 
@@ -19,7 +19,7 @@ ${SNP2HLAPROG} \
     ${REFFILE}  \
     $OUTDIR \
     ${PLINK} \
-    80000 1000
+    $max_memory $window_size
 
 
 
