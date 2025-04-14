@@ -112,7 +112,7 @@ plink --bfile $OUTDIR/qc5_pruned --pca --out $OUTDIR/qc8_pca
 # plot pca
 python $PYDIR/qc8_1_plot_pca.py $OUTDIR/qc8_pca.eigenvec $OUTDIR/qc5_pruned
 
-# pca to keep
+# pca to remove
 python $PYDIR/qc8_2_pca_to_remove.py $OUTDIR/qc8_pca.eigenvec 0.05 -0.05 0.1 -0.1
 
 
