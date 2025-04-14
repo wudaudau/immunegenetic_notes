@@ -120,7 +120,7 @@ python $PYDIR/qc8_2_pca_to_remove.py $OUTDIR/qc8_pca.eigenvec 0.05 -0.05 0.1 -0.
 
 
 
-# Prepare for imputation
+# QC9 Prepare for imputation
 
 # Combine Col1 and Col2 of qc6_heterozygosity_outliers.txt, qc7_3_duplicates_to_remove.txt, qc8_pca_to_remove.txt
 awk 'NR>1 {print $1, $2}' $OUTDIR/qc6_heterozygosity_outliers.txt > $OUTDIR/qc9_remove.txt
@@ -130,3 +130,5 @@ awk 'NR>1 {print $1, $2}' $OUTDIR/qc8_pca_to_remove.txt >> $OUTDIR/qc9_remove.tx
 # Remove qc9_remove.txt from qc4_hweall, do not use pruned data
 plink --bfile $OUTDIR/qc4_hweall --remove $OUTDIR/qc9_remove.txt --make-bed --out $OUTDIR/qc9_outliers_removed
 
+# Extract chr6
+plink --bfile $OUTDIR/qc9_outliers_removed --chr 6 --make-bed --out $OUTDIR/qc9_outliers_removed_chr6
