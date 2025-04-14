@@ -576,20 +576,7 @@ Output:
 
 - `qc7_3_duplicates_to_remove.txt`
 
-### QC7-4 Remove duplicates
 
-```bash
-plink \
-  --bfile $OUTDIR/qc6_2_heterozygosity_outliers_removed \
-  --remove $OUTDIR/qc7_3_duplicates_to_remove.txt \
-  --make-bed \
-  --out $OUTDIR/qc7_4_duplicate_removed
-```
-
-Output:
-
-- `.log`
-- new bfiles
 
 ## QC8 PCA
 
@@ -645,33 +632,38 @@ Output:
 
 - `qc8_1_pca.png` PCA plot with phenotypes.
 
-### pca to keep
-
-How to select individuals based on PCA clusters? Manually or automatically define a selection boundary (e.g., PC1 between -0.05 and 0.05, PC2 between -0.1 and 0.1). If we select automatically, we can determin the threshold to exclude the outliers.
-
-We put the range of PC1 pos, PC1 neg, PC2 pos, and PC2 neg. We take PC1 between -0.05 and 0.5 and PC2 between -0.1 and 0.1 in this example.
+plot pca
 
 ```bash
-python py_script/qc8_2_pca_to_keep.py $OUTDIR/qc8_1_pca.eigenvec 0.05 -0.05 0.1 -0.1
+python $PYDIR/qc8_1_plot_pca.py $OUTDIR/qc8_pca.eigenvec $OUTDIR/qc5_pruned
 ```
 
 Output:
 
-- `qc8_2_pca_to_keep.txt`
+- a `.png` file of PCA PC1 and PC2.
 
-It's a list of individual with PC1 and PC2 in the range.
-
-### QC8-2 keep pca
+pca to remove
 
 ```bash
-plink \
-  --bfile $OUTDIR/qc7_4_duplicate_removed \
-  --keep $OUTDIR/qc8_2_pca_to_keep.txt \
-  --make-bed \
-  --out $OUTDIR/qc8_2_pca_done
+python $PYDIR/qc8_2_pca_to_remove.py $OUTDIR/qc8_pca.eigenvec 0.05 -0.05 0.1 -0.1
 ```
 
 Output:
 
-- `.log`
-- new bfiles
+- `qc8_pca_to_remove.txt`
+
+## QC9 Prepare for imputation
+
+Combine Col1 and Col2 of qc6_heterozygosity_outliers.txt, qc7_3_duplicates_to_remove.txt, qc8_pca_to_remove.txt
+
+```bash
+awk 'NR>1 {print $1, $2}' $OUTDIR/qc6_heterozygosity_outliers.txt > $OUTDIR/qc9_remove.txt
+awk 'NR>1 {print $1, $2}' $OUTDIR/qc7_3_duplicates_to_remove.txt >> $OUTDIR/qc9_remove.txt
+awk 'NR>1 {print $1, $2}' $OUTDIR/qc8_pca_to_remove.txt >> $OUTDIR/qc9_remove.txt
+```
+
+Remove qc9_remove.txt from qc4_hweall, do not use pruned data
+
+```bash
+plink --bfile $OUTDIR/qc4_hweall --remove $OUTDIR/qc9_remove.txt --make-bed --out $OUTDIR/qc9_outliers_removed
+```
