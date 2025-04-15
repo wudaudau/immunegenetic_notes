@@ -72,7 +72,7 @@ plink --bfile $OUTDIR/qc3_maf --hwe $HWE --hwe-all --make-bed --out $OUTDIR/qc4_
 
 # Generate indepSNP tags
 # We need the inversion.txt from 1_QC_GWAS of the GWA_tutorial
-plink --bfile $OUTDIR/qc4_hweall --exclude 1_QC_GWAS/inversion.txt --range --indep-pairwise 50 5 $R2 --out $OUTDIR/qc5_indepSNP
+plink --bfile $OUTDIR/qc4_hweall --exclude $INVERSIONTXT --range --indep-pairwise 50 5 $R2 --out $OUTDIR/qc5_indepSNP
 
 # prun data
 plink --bfile $OUTDIR/qc4_hweall --extract $OUTDIR/qc5_indepSNP.prune.in --make-bed --out $OUTDIR/qc5_pruned
