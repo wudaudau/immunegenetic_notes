@@ -9,6 +9,8 @@ It takes hours to index the graph and testing installation, respectively.
 
 ## Steps of installation
 
+### Create the env with required packages
+
 Run the following code to create an env named `hla-la-env` with `hla-la` (channel bioconda). `libgcc-ng` (channel conda-forge) is required to installing hla-la.
 
 ```bash
@@ -17,11 +19,11 @@ conda create -n hla-la-env bioconda::hla-la conda-forge::libgcc-ng
 
 The Platform should be linux-64. It does not work on MAC OS.
 
-Among the packages, I saw it uses older versions of Py and pandas. Probably, it is not a good idea to add Python to the env. We will see ... 
+Of note, I saw it uses older versions of Py and pandas among the packages. In order to not disrupt the env, do not add Python to the env.
 
-Be careful with the messages from conda. There are additional instruction to complete the installation.
+**Be careful with the messages from conda to download the data packages and index the graph.**
 
-## Download the data package
+### Download the data package
 
 It's about 5GB.
 
@@ -32,7 +34,7 @@ wget http://www.well.ox.ac.uk/downloads/PRG_MHC_GRCh38_withIMGT.tar.gz
 tar -xvzf PRG_MHC_GRCh38_withIMGT.tar.gz
 ```
 
-## Download the reference
+### Download the reference
 
 It's about 852.68MB.
 
@@ -42,14 +44,14 @@ wget https://www.dropbox.com/s/mnkig0fhaym43m0/reference_HLA_ASM.tar.gz
 tar -xvzf reference_HLA_ASM.tar.gz
 ```
 
-## Modifying paths.ini
+### Modifying paths.ini
 
 Skip it. We don't need to specify a working directory. We specify it at each run.
 
 (GitHub)
 > If you want to create a central installation of HLA-LA, you will probably want to delete the `workingDir` entry from the `paths.ini` file -- this forces users to specify a working directory via the command line and avoids shared access to the same working directory.
 
-## Index the graph
+### Index the graph
 
 ```bash
 ../miniconda3/envs/hla-la-env/opt/hla-la/bin/HLA-LA --action prepareGraph --PRG_graph_dir /work/clwu/miniconda3/envs/h
