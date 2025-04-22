@@ -61,11 +61,13 @@ la-la-env/opt/hla-la/graphs/PRG_MHC_GRCh38_withIMGT
 Download the "BA121878 mini" test CRAM file from Dropbox using `wget`.
 
 ```bash
+wget https://www.dropbox.com/s/xr99u3vqaimk4vo/NA12878.mini.cram?dl=0
 ```
 
 Rename the file to remove "?dl=0" use `mv`.
 
 ```bash
+mv NA12878.mini.cram?dl=0 NA12878.mini.cram
 ```
 
 Activate the env and run. We can adjust `--maxThreads`.
