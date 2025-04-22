@@ -11,6 +11,8 @@ It takes hours to index the graph and testing installation, respectively.
 
 ### Create the env with required packages
 
+You can install HLA-LA by creating a new environment and specifying all required channels in a single command.
+
 Run the following code to create an env named `hla-la-env` with `hla-la` (channel bioconda). `libgcc-ng` (channel conda-forge) is required to installing hla-la.
 
 ```bash
