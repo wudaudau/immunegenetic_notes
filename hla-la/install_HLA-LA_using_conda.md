@@ -60,6 +60,8 @@ la-la-env/opt/hla-la/graphs/PRG_MHC_GRCh38_withIMGT
 
 ## Testing installation
 
+We can create a repository name `HLA-LA` to run it. It would be the `--workingDir`.
+
 Download the "BA121878 mini" test CRAM file from Dropbox using `wget`.
 
 ```bash
