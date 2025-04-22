@@ -12,6 +12,8 @@ After a quick test, I found this version of SNP2HLA is
 
 ## Insteall using conda
 
+You can install HLA-LA by creating a new environment and specifying all required channels in a single command.
+
 https://github.com/immunogenomics/HLA-TAPAS/issues/29
 
 ```bash
