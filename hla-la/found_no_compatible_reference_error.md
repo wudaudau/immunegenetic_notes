@@ -36,7 +36,7 @@ There are only 4 files:
 
 Additional references in `hla-la-env` should be in `src`: `/work/clwu/miniconda3/envs/hla-la-env/opt/hla-la/src/additionalReferences/PRG_MHC_GRCh38_withIMGT`.
 
-If no `additionalReferences` presenced, they could be downloaded from the GitHub (`additionalReferences /PRG_MHC_GRCh38_withIMGT`) and be placed under the hla-la-env (see the path from the error message).
+If no `additionalReferences` presenced, they could be downloaded from the [GitHub of HLA-LA](https://github.com/DiltheyLab/HLA-LA) (`additionalReferences /PRG_MHC_GRCh38_withIMGT`) and be placed under the hla-la-env (see the path from the error message).
 
 If we create our own reference, we put it in the `additionalReference`.
 
