@@ -42,4 +42,4 @@ If we create our own reference, we put it in the `additionalReference`.
 
 ## Steps to prepare the reference
 
-(TODO)
+Use `samtools idxstats` with the BAM files to obtain the reference structure. (TODO)
