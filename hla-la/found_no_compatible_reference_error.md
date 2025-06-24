@@ -43,3 +43,7 @@ If we create our own reference, we put it in the `additionalReference`.
 ## Steps to prepare the reference
 
 Use `samtools idxstats` with the BAM files to obtain the reference structure. (TODO)
+
+Try to find clues from the issues:
+- [https://github.com/DiltheyLab/HLA-LA/issues/61](https://github.com/DiltheyLab/HLA-LA/issues/61)
+- [https://github.com/DiltheyLab/HLA-LA/issues/27](https://github.com/DiltheyLab/HLA-LA/issues/27)
